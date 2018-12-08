@@ -7,8 +7,17 @@ import jwt from 'jsonwebtoken';
 const userSchema = new mongoose.Schema({
   username: {type: String, required: true, unique: true},
   password: {type: String, required: true},
-  email: {type: String}
+  email: {type: String},
+  role: {type:String, default:'user', enum:['user', 'editor', 'admin']}
 });
+
+// ///////////////////////////////////////////////////
+// const capabilities = {
+//   user: ['read'],
+//   editor: ['create', 'read', 'update'],
+//   admin:['create','read','update',delete']
+// }
+///////////////////////////////////////////////////
 
 userSchema.pre('save', function(next) {
   bcrypt.hash(this.password,10)
@@ -18,6 +27,18 @@ userSchema.pre('save', function(next) {
     })
     .catch( error => {throw error;} );
 });
+
+///////////////////////////////////////////////////
+//should show in middleware.js in _authenticate(user)
+// userSchema.post('findOne', function(){
+//   this.capabilities = capabilities[this.role];
+// })
+///////////////////////////////////////////////////
+// method can call from anywhere to see if it'll work
+// userSchema.methods.can = function(capability) {
+//   return capabilities[this.role].includes(capability);
+// };
+///////////////////////////////////////////////////
 
 userSchema.statics.createFromOAuth = function(incoming) {
 
@@ -70,6 +91,9 @@ userSchema.methods.comparePassword = function(password) {
 userSchema.methods.generateToken = function() {
   let tokenData = {
     id:this._id,
+    ///////////////////////////////////////////////////
+    // capabilities: capabilities[this.role],
+    ///////////////////////////////////////////////////
   };
   return jwt.sign(tokenData, process.env.SECRET || 'changeit' );
 };

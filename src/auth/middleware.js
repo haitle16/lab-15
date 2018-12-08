@@ -2,6 +2,9 @@
 
 import User from './model.js';
 
+// app.get('/', auth('delete'), ...
+// -> app.get('/', (req,res,next) => ...
+
 export default (capability) => {
 
   return (req, res, next) => {
@@ -42,6 +45,11 @@ export default (capability) => {
     }
 
     function _authenticate(user) {
+      //good user
+      // do we care about capabilities
+      // if so, does the user posses the right capability???
+      // if(user && (!capability) || user.can(capability) {
+      // console.log('in _authenticate', user);
       if ( user ) {
         req.user = user;
         req.token = user.generateToken();
