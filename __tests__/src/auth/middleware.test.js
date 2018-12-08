@@ -29,16 +29,16 @@ afterAll(stopDB);
   ... you can go further as you please.
  */
 describe('Auth Middleware', () => {
-  
+
   // admin:password: YWRtaW46cGFzc3dvcmQ=
   // admin:foo: YWRtaW46Zm9v
   // editor:password: ZWRpdG9yOnBhc3N3b3Jk
   // user:password: dXNlcjpwYXNzd29yZA==
-  
+
   let errorObject = {"message": "Invalid User ID/Password", "status": 401, "statusMessage": "Unauthorized"};
-  
+
   describe('user authentication', () => {
-    
+
     let cachedToken;
 
     it('fails a login for a user (admin) with the incorrect basic credentials', () => {
@@ -123,24 +123,6 @@ describe('Auth Middleware', () => {
 
   describe('user authorization', () => {
 
-    it('restricts access to a valid user without permissions', () => {
-
-      let req = {
-        headers: {
-          authorization: 'Basic YWRtaW46cGFzc3dvcmQ=',
-        },
-      };
-      let res = {};
-      let next = jest.fn();
-      let middleware = auth('godpower');
-
-      return middleware(req,res,next)
-        .then( () => {
-          expect(next).toHaveBeenCalledWith(errorObject);
-        });
-
-    }); // it()
-
     it('grants access when a user has permission', () => {
 
       let req = {
@@ -160,5 +142,5 @@ describe('Auth Middleware', () => {
     }); // it()
 
   }); // describe()
-    
+
 });
